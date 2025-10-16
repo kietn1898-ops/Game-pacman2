@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet" />
+    <title>Pacman</title>
+    <style>
+        /* CSS để canh giữa game và tạo nút điều khiển */
+        body {
+            margin: 0;
+            background-color: black;
+            font-family: 'Press Start 2P', cursive;
+            display: flex;
+            justify-content: center; /* Canh giữa theo chiều ngang */
+            align-items: center;    /* Canh giữa theo chiều dọc */
+            height: 70vh;
+            overflow: hidden;
+        }
+
+        canvas {
+            border: 2px solid #342DCA;
+        }
+
+        /* Container cho các nút điều khiển */
+        #controls {
+            position: fixed;
+            bottom: 120px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: grid;
+            grid-template-areas:
+                ". up ."
+                "left . right"
+                ". down .";
+            gap: 10px;
+        }
+
+        .control-btn {
+            width: 60px;
+            height: 60px;
+            background-color: #333;
+            border: 2px solid #555;
+            color: white;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            user-select: none; /* Ngăn bôi đen chữ trên nút */
+        }
+        
+        .control-btn:active {
+            background-color: #555;
+        }
+
+        #btn-up { grid-area: up; }
+        #btn-left { grid-area: left; }
+        #btn-right { grid-area: right; }
+        #btn-down { grid-area: down; }
+
+        /* Ẩn các nút trên máy tính để bàn */
+        @media (min-width: 1024px) {
+            #controls {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas" width="420" height="500"></canvas>
+    <div style="display: none">
+        <img id="animations" src="assets/animations.gif" alt="" />
+        <img id="ghosts" src="assets/ghost.png" alt="" />
+    </div>
+
+    <div id="controls">
+        <button id="btn-up" class="control-btn">▲</button>
+        <button id="btn-left" class="control-btn">◄</button>
+        <button id="btn-right" class="control-btn">►</button>
+        <button id="btn-down" class="control-btn">▼</button>
+    </div>
+
+    <script src="ghost.js"></script>
+    <script src="pacman.js"></script>
+    <script src="game.js"></script>
+
+    <script>
+        const btnUp = document.getElementById("btn-up");
+        const btnLeft = document.getElementById("btn-left");
+        const btnRight = document.getElementById("btn-right");
+        const btnDown = document.getElementById("btn-down");
+
+        const handleControl = (event, direction) => {
+            event.preventDefault(); // Ngăn zoom hoặc cuộn trang khi chạm
+            if (typeof pacman !== 'undefined') {
+                pacman.nextDirection = direction;
+            }
+        };
+
+        // Gán sự kiện cho từng nút - hỗ trợ cả touch và click
+        btnUp.addEventListener('touchstart', (e) => handleControl(e, DIRECTION_UP));
+        btnUp.addEventListener('click', (e) => handleControl(e, DIRECTION_UP));
+        
+        btnLeft.addEventListener('touchstart', (e) => handleControl(e, DIRECTION_LEFT));
+        btnLeft.addEventListener('click', (e) => handleControl(e, DIRECTION_LEFT));
+        
+        btnRight.addEventListener('touchstart', (e) => handleControl(e, DIRECTION_RIGHT));
+        btnRight.addEventListener('click', (e) => handleControl(e, DIRECTION_RIGHT));
+        
+        btnDown.addEventListener('touchstart', (e) => handleControl(e, DIRECTION_BOTTOM));
+        btnDown.addEventListener('click', (e) => handleControl(e, DIRECTION_BOTTOM));
+
+        // Ngăn hành vi mặc định cho tất cả các nút
+        [btnUp, btnLeft, btnRight, btnDown].forEach(btn => {
+            btn.addEventListener('touchend', (e) => e.preventDefault());
+            btn.addEventListener('touchmove', (e) => e.preventDefault());
+        });
+    </script>
+
+</body>
+</html>
